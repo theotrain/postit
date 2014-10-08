@@ -1,0 +1,6 @@
+<%= render 'shared/content_title', title: 'Categories' %>
+<% @categories.each do |cat| %>
+<div class='span8 well'>
+<%= cat.name %>
+</div>
+<% end %>

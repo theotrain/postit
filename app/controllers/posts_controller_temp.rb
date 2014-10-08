@@ -1,17 +1,15 @@
 class PostsController < ApplicationController
 
   before_action :set_post, only: [:show, :edit, :update]
-  before_action :require_user, except: [:index, :show]
   # before action used to
   # 1) set up instance variables
   # 2) redirect based on some condition (ex: not logged in)
 
   def index
-    @posts = Post.all.sort_by{|x| x.total_votes}.reverse
+    @posts = Post.all
   end
 
   def show
-    @comment = Comment.new
   end
 
   def new
@@ -19,14 +17,17 @@ class PostsController < ApplicationController
   end
 
   def create
-    #binding.pry
+    # binding.pry
 
     @post = Post.new(post_params)
-    @post.creator = current_user
+
     if @post.save
-      flash[:message] = "Your post was saved!"
+      # redirect on save
+      flash[:notice] = "your post was created"
       redirect_to posts_path
     else
+      # render on validation error
+      # because we need to keep the @post.errors in memory
       render :new
     end
   end
@@ -36,28 +37,16 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      flash[:message] = "The post was updated!"
+      flash[:notice] = "post was updated"
       redirect_to posts_path
     else
       render :edit
     end
   end
 
-  def vote
-    # binding.pry
-    @vote = Vote.create(creator: current_user, vote: params[:vote], voteable: Post.find(params[:id]))
-    if @vote.valid?
-      flash[:notice] = 'Thanks for voting!'
-    else
-      flash[:error] = "Sorry, we couldn't count your vote."
-    end
-    redirect_to :back
-  end
-
   def post_params
     # params.require(:post).permit(:title, :url, :description)
     params.require(:post).permit! #permits all
-    # params.require(:post).permit(:title, :url, :description, category_ids: [])
   end
 
   def set_post
