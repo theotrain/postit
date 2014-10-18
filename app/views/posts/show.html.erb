@@ -5,7 +5,7 @@
   <%= render @post.categories %>
 </p>
 
-<% if logged_in_as_creator?(@post) %>
+<% if logged_in_as_creator?(@post) || logged_in_as_admin? %>
   <p class="pull-right">
     [<%= link_to "edit this post",  edit_post_path(@post) %>]
   </p>

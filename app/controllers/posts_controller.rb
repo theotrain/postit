@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
 
-  before_action :set_post, only: [:show, :edit, :update]
+  before_action :set_post, only: [:show, :edit, :update, :vote]
   before_action :require_user, except: [:index, :show]
   # before action used to
   # 1) set up instance variables
@@ -45,13 +45,19 @@ class PostsController < ApplicationController
 
   def vote
     # binding.pry
-    @vote = Vote.create(creator: current_user, vote: params[:vote], voteable: Post.find(params[:id]))
-    if @vote.valid?
-      flash[:notice] = 'Thanks for voting!'
-    else
-      flash[:error] = "Sorry, we couldn't count your vote."
+    @vote = Vote.create(creator: current_user, vote: params[:vote], voteable: @post)
+    
+    respond_to do |format|
+      format.html do 
+        if @vote.valid?
+          flash[:notice] = 'Thanks for voting!'
+        else
+          flash[:error] = "Sorry, we couldn't count your vote."
+        end
+        redirect_to :back
+      end
+      format.js { }
     end
-    redirect_to :back
   end
 
   def post_params
@@ -61,6 +67,7 @@ class PostsController < ApplicationController
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    # //binding.pry
+    @post = Post.find_by(slug: params[:id])
   end
 end

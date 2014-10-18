@@ -1,13 +1,13 @@
 class CategoriesController < ApplicationController
-
-  before_action :require_user, except: [:index, :show]
+  before_action :set_category, only: [:show, :edit, :update]
+  before_action :require_admin, except: [:index, :show]
 
 def index
   @categories = Category.all
 end
 
 def show
-  @category = Category.find(params[:id])
+  
 end
 
 def new
@@ -27,23 +27,24 @@ def create
 end
 
 def edit
-  @category = Category.find(params[:id])
+  
 end
 
 def update
-  @category = Category.find(params[:id])
-  
+   
   if @category.update(category_params)
     flash[:message] = 'Category Updated'
     redirect_to categories_path
   else
     render :edit
   end
-
-
 end
 
 def destroy
+end
+
+def set_category
+  @category = Category.find_by(slug: params[:id])
 end
 
 def category_params
