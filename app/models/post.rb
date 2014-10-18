@@ -1,6 +1,6 @@
 class Post < ActiveRecord::Base
   # include Voteable
-  include VoteableOwen
+  include Voteable
   include Sluggable
 
   #belongs_to :user #, foreign_key: :user_id
